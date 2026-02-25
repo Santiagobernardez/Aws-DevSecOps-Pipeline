@@ -15,7 +15,9 @@ I am currently building and integrating the following tools:
 * **Security Scanning:** Trivy, Shell Scripting
 
 ## 🚀 Upcoming Milestones
-- [ ] Step 1: Create a basic application to act as the test target.
+- [X] Step 1: Create a basic application to act as the test target.
+    - Created a lightweight HTML5 landing page.
+    - Developed a `Dockerfile` using `nginx:alpine` to minimize the attack surface.
 - [ ] Step 2: Set up Terraform for AWS infrastructure provisioning (Remote State).
 - [ ] Step 3: Write secure, non-root Dockerfile.
 - [ ] Step 4: Build GitHub Actions workflow integrating Trivy scans.

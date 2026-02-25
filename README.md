@@ -23,4 +23,13 @@ I am currently building and integrating the following tools:
 - [ ] Step 4: Build GitHub Actions workflow integrating Trivy scans.
 - [ ] Step 5: Deploy to AWS and document trade-offs.
 
+## 🛠 Design & Technical Decisions
+
+During the development of this pipeline, I made specific architectural choices to balance security, performance, and complexity:
+
+| Decision | Reasoning | Trade-off |
+| :--- | :--- | :--- |
+| **Nginx Alpine Base** | Drastically reduces the image size and the attack surface for security vulnerabilities. | Fewer debugging tools inside the container (no `curl`, `bash`, etc.). |
+| **Conventional Commits** | Ensures a clean, readable, and professional git history that follows industry standards. | Requires more discipline and time when writing commit messages. |
+
 > *Follow my progress! This README will be updated as the pipeline is built.*

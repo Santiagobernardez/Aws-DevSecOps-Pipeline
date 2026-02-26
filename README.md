@@ -14,14 +14,16 @@ I am currently building and integrating the following tools:
 * **Containers:** Docker
 * **Security Scanning:** Trivy, Shell Scripting
 
-## 🚀 Upcoming Milestones
-- [X] Step 1: Create a basic application to act as the test target.
+## 🚀 Milestones & Progress
+- [x] **Step 1: Application & Containerization**
     - Created a lightweight HTML5 landing page.
     - Developed a `Dockerfile` using `nginx:alpine` to minimize the attack surface.
-- [ ] Step 2: Set up Terraform for AWS infrastructure provisioning (Remote State).
-- [ ] Step 3: Write secure, non-root Dockerfile.
-- [ ] Step 4: Build GitHub Actions workflow integrating Trivy scans.
-- [ ] Step 5: Deploy to AWS and document trade-offs.
+- [x] **Step 2: Infrastructure as Code (IaC) & Security Baseline**
+    - Configured AWS Root account with **MFA** and created a dedicated IAM User following the **Principle of Least Privilege**.
+    - Provisioned a `t3.micro` EC2 instance using **Terraform** (Ubuntu 22.04 LTS).
+    - Verified infrastructure lifecycle (Plan -> Apply -> Destroy) for cost and resource management.
+- [ ] **Step 3: Remote State & CI/CD Automation**
+- [ ] **Step 4: Security Scanning Integration**
 
 ## 🛠 Design & Technical Decisions
 

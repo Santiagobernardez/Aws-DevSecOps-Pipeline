@@ -35,3 +35,8 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+awscliv2.zip
+aws/
+
+echo "awscliv2.zip" >> .gitignore
+echo "aws/" >> .gitignore

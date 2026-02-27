@@ -39,3 +39,8 @@ jobs:
       # Step 6: Build or change infrastructure without requiring interactive approval
       - name: "Terraform Apply"
         run: terraform apply -auto-approve
+        
+      # Run Destroy ONLY if manually triggered with 'destroy' option
+      - name: "Terraform Destroy"
+        if: github.event.inputs.action == 'destroy'
+        run: terraform destroy -auto-approve

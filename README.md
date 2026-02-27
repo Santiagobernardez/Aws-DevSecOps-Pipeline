@@ -25,7 +25,10 @@ I am currently building and integrating the following tools:
 - [X] **Step 3: Remote State & CI/CD Automation**
     - Migrated Terraform state to a secure remote backend (**Amazon S3**) with state locking (**DynamoDB**) to prevent concurrent modifications
     - Built an automated CI/CD pipeline using **GitHub Actions** to securely provision infrastructure on `push`, and added a `workflow_dispatch` trigger for manual teardown.
-- [ ] **Step 4: Security Scanning Integration**
+- [X] **Step 4: Security Scanning Integration**
+    - Integrated **Trivy** vulnerability scanner into the GitHub Actions pipeline.
+    - Configured Shift-Left security by scanning the local Docker image (`nginx:alpine`) before infrastructure deployment.
+    - Enforced a pipeline break (`exit-code: 1`) if any `CRITICAL` or `HIGH` vulnerabilities are detected, acting as a strict security gate.
 
 ## 🛠 Design & Technical Decisions
 
@@ -38,5 +41,7 @@ During the development of this pipeline, I made specific architectural choices t
 | **Dedicated IAM Admin User** | Enforces the Principle of Least Privilege and protects the AWS Root account from accidental or malicious exposure. | Adds administrative overhead by requiring the management of multiple credentials and profiles. |
 | **EC2 `t3.micro` Instance** | Stays strictly within the AWS Free Tier to keep infrastructure costs at $0 during the pipeline development. | Extremely limited compute power (2 vCPUs, 1GB RAM); might struggle with heavy container workloads. |
 | **Manual Destroy Trigger** | Added `workflow_dispatch` to GitHub Actions to allow one-click infrastructure teardown from the UI. | Requires manual intervention to stop AWS charges, instead of an automatic scheduled shutdown. |
+| **Trivy CI/CD Integration** | Enforces "Shift-Left" security, preventing vulnerable containers from ever reaching the AWS environment. | Increases the pipeline execution time slightly and requires defining strict vulnerability severity thresholds. |
+| **Variables Modularization (`variables.tf`)** | Adheres to DRY principles, making the Terraform code reusable, cleaner, and easier to maintain across different environments. | Adds initial setup time and requires managing default values explicitly. |
 
 > *Follow my progress! This README will be updated as the pipeline is built.*

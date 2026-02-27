@@ -2,13 +2,13 @@
 End-to-end Secure DevSecOps pipeline automating AWS infrastructure with Terraform, Docker image scanning with Trivy, and CI/CD with GitHub Actions.
 # 🚧 WIP: Secure DevSecOps Pipeline (AWS & Terraform)
 
-**Status:** Work In Progress 🛠️ (Started: Feb 20, 2026)
+**Status:** Completed ✅
 
 ## 📌 Project Objective
-This repository will contain an end-to-end automated CI/CD pipeline built from scratch. The goal is to integrate Infrastructure as Code (IaC), container security scanning, and automated deployments to catch vulnerabilities before they reach production.
+This repository contains an end-to-end automated CI/CD pipeline built from scratch. The goal was to integrate Infrastructure as Code (IaC), container security scanning, and automated deployments to catch vulnerabilities before they reach production.
 
 ## 🏗️ Planned Architecture & Tech Stack
-I am currently building and integrating the following tools:
+I built and integrated the following tools:
 * **Cloud & IaC:** AWS (EC2, S3), Terraform
 * **CI/CD:** GitHub Actions
 * **Containers:** Docker
@@ -32,7 +32,7 @@ I am currently building and integrating the following tools:
 
 ## 🛠 Design & Technical Decisions
 
-During the development of this pipeline, I made specific architectural choices to balance security, performance, and complexity:
+During the development of this pipeline, I have been making specific architectural choices to balance security, performance, and complexity:
 
 | Decision | Reasoning | Trade-off |
 | :--- | :--- | :--- |
@@ -44,4 +44,8 @@ During the development of this pipeline, I made specific architectural choices t
 | **Trivy CI/CD Integration** | Enforces "Shift-Left" security, preventing vulnerable containers from ever reaching the AWS environment. | Increases the pipeline execution time slightly and requires defining strict vulnerability severity thresholds. |
 | **Variables Modularization (`variables.tf`)** | Adheres to DRY principles, making the Terraform code reusable, cleaner, and easier to maintain across different environments. | Adds initial setup time and requires managing default values explicitly. |
 
-> *Follow my progress! This README will be updated as the pipeline is built.*
+> *Follow my progress! I will be updating the project with new features:
+* **Continuous Deployment (CD):** Push scanned images to **AWS ECR** and automate the pull on EC2.
+* **Infrastructure Auditing:** Integrate **tfsec** or **Checkov** to scan Terraform code for misconfigurations.
+* **Cost Observability:** Add **Infracost** to the pipeline to monitor AWS spending per PR.
+* **Notifications:** Slack/Discord alerts for pipeline success or security failures..*

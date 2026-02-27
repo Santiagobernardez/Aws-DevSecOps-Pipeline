@@ -22,7 +22,9 @@ I am currently building and integrating the following tools:
     - Configured AWS Root account with **MFA** and created a dedicated IAM User following the **Principle of Least Privilege**.
     - Provisioned a `t3.micro` EC2 instance using **Terraform** (Ubuntu 22.04 LTS).
     - Verified infrastructure lifecycle (Plan -> Apply -> Destroy) for cost and resource management.
-- [ ] **Step 3: Remote State & CI/CD Automation**
+- [X] **Step 3: Remote State & CI/CD Automation**
+    - Migrated Terraform state to a secure remote backend (**Amazon S3**) with state locking (**DynamoDB**) to prevent concurrent modifications
+    - Built an automated CI/CD pipeline using **GitHub Actions** to securely provision infrastructure on `push`, and added a `workflow_dispatch` trigger for manual teardown.
 - [ ] **Step 4: Security Scanning Integration**
 
 ## 🛠 Design & Technical Decisions
@@ -33,5 +35,8 @@ During the development of this pipeline, I made specific architectural choices t
 | :--- | :--- | :--- |
 | **Nginx Alpine Base** | Drastically reduces the image size and the attack surface for security vulnerabilities. | Fewer debugging tools inside the container (no `curl`, `bash`, etc.). |
 | **Conventional Commits** | Ensures a clean, readable, and professional git history that follows industry standards. | Requires more discipline and time when writing commit messages. |
+| **Dedicated IAM Admin User** | Enforces the Principle of Least Privilege and protects the AWS Root account from accidental or malicious exposure. | Adds administrative overhead by requiring the management of multiple credentials and profiles. |
+| **EC2 `t3.micro` Instance** | Stays strictly within the AWS Free Tier to keep infrastructure costs at $0 during the pipeline development. | Extremely limited compute power (2 vCPUs, 1GB RAM); might struggle with heavy container workloads. |
+| **Manual Destroy Trigger** | Added `workflow_dispatch` to GitHub Actions to allow one-click infrastructure teardown from the UI. | Requires manual intervention to stop AWS charges, instead of an automatic scheduled shutdown. |
 
 > *Follow my progress! This README will be updated as the pipeline is built.*

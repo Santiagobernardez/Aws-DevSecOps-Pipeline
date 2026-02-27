@@ -1,4 +1,5 @@
 #Pinning to Ubuntu 22.04 LTS as the base image for stability and long-term security patching
+
 terraform {
   required_providers {
     aws = {
@@ -6,7 +7,16 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  backend "s3" {
+    bucket =  "devsecops-tf-state-bernardez"
+    key = "infra/terraform.tfstate"
+    region = "us-east-1"
+    dynamodb_table = "devsecops-tf-lock"
+    encrypt = true
+  }
 }
+
 
 provider "aws" {
   region = "us-east-1"

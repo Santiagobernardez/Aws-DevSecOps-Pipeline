@@ -1,0 +1,41 @@
+name: "Terraform CI/CD Pipeline"
+
+# Trigger the workflow on code pushes to the main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: "Provision Infrastructure"
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Clone the repository code into the runner
+      - name: "Checkout Source Code"
+        uses: actions/checkout@v4
+
+      # Step 2: Authenticate securely with AWS using GitHub Secrets
+      - name: "Configure AWS Credentials"
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Step 3: Install the specified version of HashiCorp Terraform
+      - name: "Setup Terraform"
+        uses: hashicorp/setup-terraform@v3
+
+      # Step 4: Initialize the working directory and configure the S3 backend
+      - name: "Terraform Init"
+        run: terraform init
+
+      # Step 5: Generate and show an execution plan
+      - name: "Terraform Plan"
+        run: terraform plan
+
+      # Step 6: Build or change infrastructure without requiring interactive approval
+      - name: "Terraform Apply"
+        run: terraform apply -auto-approve

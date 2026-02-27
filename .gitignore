@@ -38,5 +38,6 @@ terraform.rc
 awscliv2.zip
 aws/
 
+
 echo "awscliv2.zip" >> .gitignore
 echo "aws/" >> .gitignore

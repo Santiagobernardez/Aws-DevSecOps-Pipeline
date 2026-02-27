@@ -46,6 +46,8 @@ jobs:
   terraform:
     name: "Provision Infrastructure"
     runs-on: ubuntu-latest
+    # Wait for Trivy to pass before running Terraform
+    needs: security_scan
 
     steps:
       # Step 1: Clone the repository code into the runner
@@ -64,16 +66,23 @@ jobs:
       - name: "Setup Terraform"
         uses: hashicorp/setup-terraform@v3
 
-      # Step 4: Initialize the working directory and configure the S3 backend
+      # Step 4: Run tfsec to audit Terraform files before execution
+      - name: "Security Audit: tfsec"
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          soft_fail: false
+          working_directory: ./
+
+      # Step 5: Initialize the working directory and configure the S3 backend
       - name: "Terraform Init"
         run: terraform init
 
-      # Step 5: Generate and show an execution plan ONLY if applying
+      # Step 6: Generate and show an execution plan ONLY if applying
       - name: "Terraform Plan"
         if: github.event_name == 'push' || github.event.inputs.action == 'apply'
         run: terraform plan
 
-      # Step 6: Build or change infrastructure ONLY if applying
+      # Step 7: Build or change infrastructure ONLY if applying
       - name: "Terraform Apply"
         if: github.event_name == 'push' || github.event.inputs.action == 'apply'
         run: terraform apply -auto-approve

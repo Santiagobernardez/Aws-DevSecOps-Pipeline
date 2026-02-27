@@ -35,9 +35,15 @@ data "aws_ami" "ubuntu" {
 
 
 resource "aws_instance" "Web_server" {
-  ami = data.aws_ami.ubuntu.id
-  instance_type = "t3.micro" # Kept on t3.micro to stay within AWS Free Tier
+  ami           = data.aws_ami.ubuntu.id
+  
+  # Use variable instead of hardcoded value
+  instance_type = var.instance_type 
+  
+  # Metadata tags for resource identification
   tags = {
-    Name = "DevSecOps-Server"
+    Name        = "DevSecOps-Server"
+    Environment = var.environment
+    Project     = "AWS-Pipeline"
   }
 }

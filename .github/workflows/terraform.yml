@@ -5,7 +5,19 @@ on:
   push:
     branches:
       - main
-
+    paths-ignore:
+      - 'README.md'
+      - '**/*.md'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Choose what Terraform should do:'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
 jobs:
   terraform:
     name: "Provision Infrastructure"
@@ -32,12 +44,14 @@ jobs:
       - name: "Terraform Init"
         run: terraform init
 
-      # Step 5: Generate and show an execution plan
+      # Step 5: Generate and show an execution plan ONLY if applying
       - name: "Terraform Plan"
+        if: github.event_name == 'push' || github.event.inputs.action == 'apply'
         run: terraform plan
 
-      # Step 6: Build or change infrastructure without requiring interactive approval
+      # Step 6: Build or change infrastructure ONLY if applying
       - name: "Terraform Apply"
+        if: github.event_name == 'push' || github.event.inputs.action == 'apply'
         run: terraform apply -auto-approve
         
       # Run Destroy ONLY if manually triggered with 'destroy' option

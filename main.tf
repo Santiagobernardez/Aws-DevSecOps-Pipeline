@@ -39,8 +39,5 @@ resource "aws_instance" "Web_server" {
   instance_type = "t3.micro" # Kept on t3.micro to stay within AWS Free Tier
   tags = {
     Name = "DevSecOps-Server"
-    Environment = "Development"
-    Owner = "Santiago"
-
   }
 }

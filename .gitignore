@@ -41,3 +41,11 @@ aws/
 
 echo "awscliv2.zip" >> .gitignore
 echo "aws/" >> .gitignore
+
+# Local .terraform directories
+**/.terraform/*
+.terraform*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*

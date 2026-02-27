@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: "Build local Docker image for scanning"
-        run: docker build -t my-secure-app:latest .
+        run: docker build -t my-secure-app:latest ./app
 
       - name: "Run Trivy vulnerability scanner"
         uses: aquasecurity/trivy-action@master
@@ -71,23 +71,24 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.3
         with:
           soft_fail: false
-          working_directory: ./
+          working_directory: ./infrastructure
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       # Step 5: Initialize the working directory and configure the S3 backend
       - name: "Terraform Init"
-        run: terraform init
+        run: terraform -chdir=infrastructure init
 
       # Step 6: Generate and show an execution plan ONLY if applying
       - name: "Terraform Plan"
         if: github.event_name == 'push' || github.event.inputs.action == 'apply'
-        run: terraform plan
+        run: terraform -chdir=infrastructure plan
 
       # Step 7: Build or change infrastructure ONLY if applying
       - name: "Terraform Apply"
         if: github.event_name == 'push' || github.event.inputs.action == 'apply'
-        run: terraform apply -auto-approve
+        run: terraform -chdir=infrastructure apply -auto-approve
         
       # Run Destroy ONLY if manually triggered with 'destroy' option
       - name: "Terraform Destroy"
         if: github.event.inputs.action == 'destroy'
-        run: terraform destroy -auto-approve
+        run: terraform -chdir=infrastructure destroy -auto-approve

@@ -18,49 +18,51 @@ This project demonstrates a fully automated, secure, and cost-efficient CI/CD pi
 * **Security & Auditing:** Trivy (Images), tfsec (IaC), AWS ECR Scanning
 
 ## 🏗️ Cloud Architecture & CI/CD Pipeline
+```mermeid
 flowchart TB
-    subgraph CI_CD ["🚀 GitHub Actions (CI/CD Pipeline)"]
+    subgraph CI_CD [&quot;🚀 GitHub Actions (CI/CD Pipeline)&quot;]
         direction TB
-        Commit["Developer Push"] --> Checkout["Checkout Code"]
-        Checkout --> TF_Sec["🔒 tfsec (IaC Security Scan)"]
-        Checkout --> DockerBuild["🐳 Build Docker Image"]
-        DockerBuild --> Trivy["🛡️ Trivy (Vulnerability Scan)"]
+        Commit[&quot;Developer Push&quot;] --&gt; Checkout[&quot;Checkout Code&quot;]
+        Checkout --&gt; TF_Sec[&quot;🔒 tfsec (IaC Security Scan)&quot;]
+        Checkout --&gt; DockerBuild[&quot;🐳 Build Docker Image&quot;]
+        DockerBuild --&gt; Trivy[&quot;🛡️ Trivy (Vulnerability Scan)&quot;]
         
-        TF_Sec --> TF_Apply["🏗️ Terraform Apply"]
-        Trivy -->|If 0 CRITICAL| PushECR["☁️ Push to AWS ECR"]
+        TF_Sec --&gt; TF_Apply[&quot;🏗️ Terraform Apply&quot;]
+        Trivy --&gt;|If 0 CRITICAL| PushECR[&quot;☁️ Push to AWS ECR&quot;]
     end
 
-    subgraph AWS ["☁️ AWS Cloud Infrastructure"]
+    subgraph AWS [&quot;☁️ AWS Cloud Infrastructure&quot;]
         direction TB
         
-        subgraph TF_Backend ["Terraform Remote Backend"]
-            S3[("🪣 Amazon S3\n(State File)")]
-            DynamoDB[("⚡ DynamoDB\n(State Locking)")]
+        subgraph TF_Backend [&quot;Terraform Remote Backend&quot;]
+            S3[(&quot;🪣 Amazon S3\n(State File)&quot;)]
+            DynamoDB[(&quot;⚡ DynamoDB\n(State Locking)&quot;)]
         end
 
-        ECR["📦 Amazon ECR\n(Private Registry)"]
-        IAM["🔑 IAM Role &\nInstance Profile"]
-        Budgets["💰 AWS Budgets\n(Cost Governance)"]
+        ECR[&quot;📦 Amazon ECR\n(Private Registry)&quot;]
+        IAM[&quot;🔑 IAM Role &amp;\nInstance Profile&quot;]
+        Budgets[&quot;💰 AWS Budgets\n(Cost Governance)&quot;]
         
-        subgraph VPC ["VPC & Networking"]
-            SG["🛡️ Security Groups\n(Least Privilege)"] --> EC2["💻 EC2 Instance\n(t3.micro)"]
+        subgraph VPC [&quot;VPC &amp; Networking&quot;]
+            SG[&quot;🛡️ Security Groups\n(Least Privilege)&quot;] --&gt; EC2[&quot;💻 EC2 Instance\n(t3.micro)&quot;]
         end
     end
 
     %% Connections
-    TF_Apply -.->|Reads/Writes State| S3
-    TF_Apply -.->|Acquires Lock| DynamoDB
+    TF_Apply -.-&gt;|Reads/Writes State| S3
+    TF_Apply -.-&gt;|Acquires Lock| DynamoDB
     
-    TF_Apply ==>|Provisions| VPC
-    TF_Apply ==>|Configures| IAM
-    TF_Apply ==>|Sets Alerts| Budgets
-    TF_Apply ==>|Creates| ECR
+    TF_Apply ==&gt;|Provisions| VPC
+    TF_Apply ==&gt;|Configures| IAM
+    TF_Apply ==&gt;|Sets Alerts| Budgets
+    TF_Apply ==&gt;|Creates| ECR
 
-    PushECR ==>|Stores Image| ECR
+    PushECR ==&gt;|Stores Image| ECR
     
-    IAM -.->|Grants Secure Pull Access| EC2
-    EC2 ==>|Pulls Container Image| ECR
+    IAM -.-&gt;|Grants Secure Pull Access| EC2
+    EC2 ==&gt;|Pulls Container Image| ECR
 
+```
 ## 🚀 Key Milestones & Security Gates
 
 - [x] **Infrastructure as Code (IaC):** Provisioned a `t3.micro` EC2 instance using Amazon Linux 2023.

@@ -87,7 +87,24 @@ jobs:
       - name: "Terraform Apply"
         if: github.event_name == 'push' || github.event.inputs.action == 'apply'
         run: terraform -chdir=infrastructure apply -auto-approve
-        
+      
+      # Step 8: Login to AWS ECR
+      - name: "Login to Amazon ECR"
+        if: github.event_name == 'push' || github.event.inputs.action == 'apply'
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Step 9: Build and Push Docker Image to ECR
+      - name: "Build and Push Image to ECR"
+        if: github.event_name == 'push' || github.event.inputs.action == 'apply'
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: devsecops-portfolio-app
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./app
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
       # Run Destroy ONLY if manually triggered with 'destroy' option
       - name: "Terraform Destroy"
         if: github.event.inputs.action == 'destroy'

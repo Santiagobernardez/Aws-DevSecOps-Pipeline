@@ -55,16 +55,16 @@ This project demonstrates a fully automated, secure, and cost-efficient CI/CD pi
 ## 📸 Visual Evidence
 
 **1. CI/CD Pipeline (Scanning & Provisioning):**
-![Pipeline Workflow](./Images_of_the_project/Workflow.JPG)
+![Pipeline Workflow](./images_of_the_project/Workflow.JPG)
 
 **2. Shift-Left Security (Clean ECR Scan after patching):**
-![ECR Security Scan](./Images_of_the_project/ECR.JPG)
+![ECR Security Scan](./images_of_the_project/ECR.JPG)
 
-**3. Infrastructure Proof (EC2 Running):** 
-![EC2 Instance Running](./Images_of_the_project/EC2.JPG)
+**3. Infrastructure Proof (EC2 Running):**  
+![EC2 Instance Running](./images_of_the_project/EC2.JPG)
 
 **4. Final Deployed Application:**
-![Live Web Application](./Images_of_the_project/Web.JPG)
+![Live Web Application](./images_of_the_project/Web.JPG)
 
 ---
 

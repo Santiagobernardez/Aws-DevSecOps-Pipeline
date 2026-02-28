@@ -1,51 +1,76 @@
-# Aws-DevSecOps-Pipeline
-End-to-end Secure DevSecOps pipeline automating AWS infrastructure with Terraform, Docker image scanning with Trivy, and CI/CD with GitHub Actions.
-# 🚧 WIP: Secure DevSecOps Pipeline (AWS & Terraform)
+# 🛡️ AWS DevSecOps Pipeline: End-to-End Secure Infrastructure
+
+[![Terraform](https://img.shields.io/badge/Terraform-1.5+-623CE4.svg?logo=terraform)](https://www.terraform.io/)
+[![AWS](https://img.shields.io/badge/AWS-Cloud-232F3E.svg?logo=amazon-aws)](https://aws.amazon.com/)
+[![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF.svg?logo=github-actions)](https://github.com/features/actions)
+[![Trivy](https://img.shields.io/badge/Security-Trivy-blue)](https://aquasecurity.github.io/trivy/)
+[![tfsec](https://img.shields.io/badge/Security-tfsec-orange)](https://aquasecurity.github.io/tfsec/)
 
 **Status:** Completed ✅
 
-## 📌 Project Objective
-This repository contains an end-to-end automated CI/CD pipeline built from scratch. The goal was to integrate Infrastructure as Code (IaC), container security scanning, and automated deployments to catch vulnerabilities before they reach production.
+## 📌 Project Overview
+This project demonstrates a fully automated, secure, and cost-efficient CI/CD pipeline. It provisions cloud infrastructure on AWS using Terraform and deploys a containerized web application via GitHub Actions. The pipeline integrates **Shift-Left security** (Trivy & tfsec) and **Cost Governance** (AWS Budgets) to ensure a production-ready environment.
 
-## 🏗️ Planned Architecture & Tech Stack
-I built and integrated the following tools:
-* **Cloud & IaC:** AWS (EC2, S3), Terraform
-* **CI/CD:** GitHub Actions
-* **Containers:** Docker
-* **Security Scanning:** Trivy, Shell Scripting
+## 🏗️ Architecture & Tech Stack
+* **Cloud & IaC:** AWS (EC2, ECR, S3, DynamoDB, IAM, Budgets), Terraform
+* **CI/CD:** GitHub Actions (Automated Pipelines, Workflow Dispatch)
+* **Containerization:** Docker (Nginx Alpine)
+* **Security & Auditing:** Trivy (Images), tfsec (IaC), AWS ECR Scanning
 
-## 🚀 Milestones & Progress
-- [x] **Step 1: Application & Containerization**
-    - Created a lightweight HTML5 landing page.
-    - Developed a `Dockerfile` using `nginx:alpine` to minimize the attack surface.
-- [x] **Step 2: Infrastructure as Code (IaC) & Security Baseline**
-    - Configured AWS Root account with **MFA** and created a dedicated IAM User following the **Principle of Least Privilege**.
-    - Provisioned a `t3.micro` EC2 instance using **Terraform** (Ubuntu 22.04 LTS).
-    - Verified infrastructure lifecycle (Plan -> Apply -> Destroy) for cost and resource management.
-- [X] **Step 3: Remote State & CI/CD Automation**
-    - Migrated Terraform state to a secure remote backend (**Amazon S3**) with state locking (**DynamoDB**) to prevent concurrent modifications
-    - Built an automated CI/CD pipeline using **GitHub Actions** to securely provision infrastructure on `push`, and added a `workflow_dispatch` trigger for manual teardown.
-- [X] **Step 4: Security Scanning Integration**
-    - Integrated **Trivy** vulnerability scanner into the GitHub Actions pipeline.
-    - Configured Shift-Left security by scanning the local Docker image (`nginx:alpine`) before infrastructure deployment.
-    - Enforced a pipeline break (`exit-code: 1`) if any `CRITICAL` or `HIGH` vulnerabilities are detected, acting as a strict security gate.
+---
 
-## 🛠 Design & Technical Decisions
+## 🚀 Key Milestones & Security Gates
 
-During the development of this pipeline, I have been making specific architectural choices to balance security, performance, and complexity:
+- [x] **Infrastructure as Code (IaC):** Provisioned a `t3.micro` EC2 instance using Amazon Linux 2023.
+- [x] **Remote State Management:** Configured S3 for state storage and DynamoDB for state locking to prevent concurrent modifications.
+- [x] **IaC Security Auditing (tfsec):** Integrated **tfsec** to scan Terraform HCL files for security misconfigurations before any resource is created.
+- [x] **Container Security (Trivy):** Automated Docker image scanning in the pipeline, enforcing a fail-fast mechanism if `CRITICAL` or `HIGH` vulnerabilities are found.
+- [x] **Continuous Deployment (CD):** Automatic Build & Push to a private **AWS ECR** with `scan_on_push` enabled.
+- [x] **Cost Governance:** Provisioned **AWS Budgets** via Terraform to monitor spending and trigger email alerts at 80% of the Free Tier limit.
+- [x] **Secure Access:** Utilized **IAM Roles & Instance Profiles** for EC2-to-ECR communication, following the Principle of Least Privilege.
+
+---
+
+## 🛠️ Design & Technical Decisions (Trade-offs)
 
 | Decision | Reasoning | Trade-off |
 | :--- | :--- | :--- |
-| **Nginx Alpine Base** | Drastically reduces the image size and the attack surface for security vulnerabilities. | Fewer debugging tools inside the container (no `curl`, `bash`, etc.). |
-| **Conventional Commits** | Ensures a clean, readable, and professional git history that follows industry standards. | Requires more discipline and time when writing commit messages. |
-| **Dedicated IAM Admin User** | Enforces the Principle of Least Privilege and protects the AWS Root account from accidental or malicious exposure. | Adds administrative overhead by requiring the management of multiple credentials and profiles. |
-| **EC2 `t3.micro` Instance** | Stays strictly within the AWS Free Tier to keep infrastructure costs at $0 during the pipeline development. | Extremely limited compute power (2 vCPUs, 1GB RAM); might struggle with heavy container workloads. |
-| **Manual Destroy Trigger** | Added `workflow_dispatch` to GitHub Actions to allow one-click infrastructure teardown from the UI. | Requires manual intervention to stop AWS charges, instead of an automatic scheduled shutdown. |
-| **Trivy CI/CD Integration** | Enforces "Shift-Left" security, preventing vulnerable containers from ever reaching the AWS environment. | Increases the pipeline execution time slightly and requires defining strict vulnerability severity thresholds. |
-| **Variables Modularization (`variables.tf`)** | Adheres to DRY principles, making the Terraform code reusable, cleaner, and easier to maintain across different environments. | Adds initial setup time and requires managing default values explicitly. |
+| **tfsec Integration** | Performs Static Analysis Security Testing (SAST) on IaC to catch misconfigurations (e.g., open ports) before deployment. | May require `tfsec:ignore` for specific intentional low-risk testing configurations. |
+| **AWS Budgets via HCL** | Ensures cost transparency. Provides immediate email alerts if the infrastructure scales unexpectedly. | Requires maintaining notification emails within the infrastructure code. |
+| **Nginx Alpine Base** | Drastically reduces the image size and the attack surface for vulnerabilities. | Fewer debugging tools inside the container (no `curl` or `bash`). |
+| **IAM Role for EC2** | Eliminates the need for static `AWS_ACCESS_KEY` on the server, using temporary secure tokens instead. | Slightly increases Terraform complexity compared to using static credentials. |
 
-> *Follow my progress! I will be updating the project with new features:
-* **Continuous Deployment (CD):** Push scanned images to **AWS ECR** and automate the pull on EC2.
-* **Infrastructure Auditing:** Integrate **tfsec** or **Checkov** to scan Terraform code for misconfigurations.
-* **Cost Observability:** Add **Infracost** to the pipeline to monitor AWS spending per PR.
-* **Notifications:** Slack/Discord alerts for pipeline success or security failures..*
+---
+
+## ⚙️ How to Reproduce (Usage)
+
+1. **Fork** this repository.
+2. Set up an AWS IAM User and an S3/DynamoDB backend for Terraform state.
+3. Configure GitHub Secrets: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+4. Trigger the workflow via the **Actions** tab.
+5. **Cleanup:** Use the `destroy` input in the workflow dispatch to tear down all resources and avoid costs.
+
+---
+
+## 📸 Visual Evidence
+
+**1. CI/CD Pipeline (Scanning & Provisioning):**
+![Pipeline Workflow](./Images_of_the_project/Workflow.JPG)
+
+**2. Shift-Left Security (Clean ECR Scan after patching):**
+![ECR Security Scan](./Images_of_the_project/ECR.JPG)
+
+**3. Infrastructure Proof (EC2 Running):** 
+![EC2 Instance Running](./Images_of_the_project/EC2.JPG)
+
+**4. Final Deployed Application:**
+![Live Web Application](./Images_of_the_project/Web.JPG)
+
+---
+
+## 👨‍💻 About the Author
+**Santiago Bernardez**
+* Student at **UNLaM** (Universidad Nacional de La Matanza)
+* Junior Cloud Engineer | DevSecOps & Terraform
+* 🔗 [LinkedIn](https://www.linkedin.com/in/santiago-bernardez-dev/)
+* 📧 [Email](mailto:santiabernardez0@gmail.com)

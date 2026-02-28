@@ -18,7 +18,7 @@ This project demonstrates a fully automated, secure, and cost-efficient CI/CD pi
 * **Security & Auditing:** Trivy (Images), tfsec (IaC), AWS ECR Scanning
 
 ## 🏗️ Cloud Architecture & CI/CD Pipeline
-```mermeid
+```mermaid
 flowchart TB
     subgraph CI_CD [&quot;🚀 GitHub Actions (CI/CD Pipeline)&quot;]
         direction TB

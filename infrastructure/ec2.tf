@@ -4,7 +4,7 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
-# 2. Security Group (El Firewall)
+# 2. Security Group 
 resource "aws_security_group" "web_sg" {
   name        = "devsecops-web-sg"
   description = "Allow HTTP inbound traffic"
@@ -25,7 +25,7 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
-# 3. IAM Role & Profile (El Permiso para leer ECR)
+# 3. IAM Role & Profile 
 resource "aws_iam_role" "ec2_ecr_role" {
   name = "ec2_ecr_access_role"
 
@@ -53,7 +53,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   role = aws_iam_role.ec2_ecr_role.name
 }
 
-# 4. Amazon Linux 2023 AMI (El Sistema Operativo base)
+# 4. Amazon Linux 2023 AMI 
 data "aws_ami" "amazon_linux_2023" {
   most_recent = true
   owners      = ["amazon"]
@@ -64,7 +64,7 @@ data "aws_ami" "amazon_linux_2023" {
   }
 }
 
-# 5. EC2 Instance (El Servidor real)
+# 5. EC2 Instance 
 resource "aws_instance" "web_server" {
   ami                    = data.aws_ami.amazon_linux_2023.id
   instance_type          = "t2.micro"

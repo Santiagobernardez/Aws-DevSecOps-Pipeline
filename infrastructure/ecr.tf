@@ -4,6 +4,7 @@
 resource "aws_ecr_repository" "app_repo" {
   name                 = "devsecops-portfolio-app"
   image_tag_mutability = "MUTABLE"
+  force_delete = true
 
   # Enable AWS native scanning on push for an extra layer of security
   image_scanning_configuration {

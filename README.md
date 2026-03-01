@@ -17,8 +17,52 @@ This project demonstrates a fully automated, secure, and cost-efficient CI/CD pi
 * **Containerization:** Docker (Nginx Alpine)
 * **Security & Auditing:** Trivy (Images), tfsec (IaC), AWS ECR Scanning
 
----
+## 🏗️ Cloud Architecture & CI/CD Pipeline
+```mermaid
+flowchart TB
+    subgraph CI_CD ["🚀 GitHub Actions (CI/CD Pipeline)"]
+        direction TB
+        Commit["Developer Push"] --> Checkout["Checkout Code"]
+        Checkout --> TF_Sec["🔒 tfsec (IaC Security Scan)"]
+        Checkout --> DockerBuild["🐳 Build Docker Image"]
+        DockerBuild --> Trivy["🛡️ Trivy (Vulnerability Scan)"]
+        
+        TF_Sec --> TF_Apply["🏗️ Terraform Apply"]
+        Trivy -->|If 0 CRITICAL| PushECR["☁️ Push to AWS ECR"]
+    end
 
+    subgraph AWS ["☁️ AWS Cloud Infrastructure"]
+        direction TB
+        
+        subgraph TF_Backend ["Terraform Remote Backend"]
+            S3[("🪣 Amazon S3 (State File)")]
+            DynamoDB[("⚡ DynamoDB (State Locking)")]
+        end
+
+        ECR["📦 Amazon ECR (Private Registry)"]
+        IAM["🔑 IAM Role & Instance Profile"]
+        Budgets["💰 AWS Budgets (Cost Governance)"]
+        
+        subgraph VPC ["VPC & Networking"]
+            SG["🛡️ Security Groups (Least Privilege)"] --> EC2["💻 EC2 Instance (t3.micro)"]
+        end
+    end
+
+    %% Connections
+    TF_Apply -.->|Reads/Writes State| S3
+    TF_Apply -.->|Acquires Lock| DynamoDB
+    
+    TF_Apply ==>|Provisions| VPC
+    TF_Apply ==>|Configures| IAM
+    TF_Apply ==>|Sets Alerts| Budgets
+    TF_Apply ==>|Creates| ECR
+
+    PushECR ==>|Stores Image| ECR
+    
+    IAM -.->|Grants Secure Pull Access| EC2
+    EC2 ==>|Pulls Container Image| ECR
+
+```
 ## 🚀 Key Milestones & Security Gates
 
 - [x] **Infrastructure as Code (IaC):** Provisioned a `t3.micro` EC2 instance using Amazon Linux 2023.
